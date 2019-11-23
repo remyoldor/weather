@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, APP_ID } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { HttpClient } from '@angular/common/http';
@@ -10,26 +10,21 @@ import { HttpClient } from '@angular/common/http';
 })
 export class Tab1Page {
 
-  public latitud: any = "";
-  public longitud: any = "";
-  public timestamp: any = "";
+  private appid = "d501e92ea8e61ca515352dfa01e4fc3d";
 
-  public ciudad: string = "";
+  public latitud    : any    = "";
+  public longitud   : any    = "";
+  public ciudad     : string = "";
+  public icon       : any    = "";
   public temperatura: string = "";
+  public timestamp  : any    = "";
+  public type       : any    = "";
+
 
   constructor(public platform: Platform, public geolocation: Geolocation, public httpClient: HttpClient) {
 
     this.platform.ready().then(() =>{
-
       this.getUbicacion();
-  
-      let watch = geolocation.watchPosition();
-      watch.subscribe((data) => {
-        // data can be a set of coordinates, or an error (if an error occurred).
-        // data.coords.latitud
-        // data.coords.longitud
-      });
-
     });
 
    }
@@ -38,15 +33,25 @@ export class Tab1Page {
      this.geolocation.getCurrentPosition().then((resp) => {
        this.latitud = resp.coords.latitude;
        this.longitud = resp.coords.longitude;
-       console.log('Mi latitud: ', resp.coords.latitude);
-       console.log('My longitud: ', resp.coords.longitude);
+       this.getTemperatura(this.latitud, this.longitud);
      }).catch((error) => {
-       console.log('Error getting location', error);
+       console.log('Ha ocurrido un error obteniendo la ubicacion: ', error);
      });
    }
 
-   getTemperatura(){
-     
+   getTemperatura(latitud, longitud){
+
+     var url = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitud + "&lon=" + longitud +"&lang=es&appid="+ this.appid;
+
+     this.httpClient.get(url).subscribe((data) => {
+      console.log(data);
+      var obj = <any>data;
+      this.ciudad = obj.name;
+      this.type = obj.weather[0].main;
+      this.icon = "https://openweathermap.org/img/w/" + obj.weather[0].icon+".png";
+      this.temperatura = ((parseFloat(obj.main.temp)-273.15).toFixed(2)).toString()+" ºC";
+
+     })
    }
 
 }

@@ -10,6 +10,12 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
   styleUrls: ['app.component.scss']
 })
 export class AppComponent {
+
+  public appMenu = [
+    { title: 'Tu ubicación' , url: '/tabs/tab1', icon: 'locate' },
+    { title: 'Favoritos'    , url: '/tabs/tab2', icon: 'heart'  },
+    { title: 'Buscar'       , url: '/tabs/tab3', icon: 'search' }
+  ];
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
