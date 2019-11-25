@@ -1,21 +1,34 @@
-<ion-header>
+<!-- <ion-header>
   <ion-toolbar>
     <ion-title class="ion-text-center">
       Tu ubicación
     </ion-title>
   </ion-toolbar>
-</ion-header>
+</ion-header> -->
 
 <ion-content>
-    <ion-card class="welcome-card">
-      <img src="{{icon}}" alt="" />
-      <ion-card-header>
-        <ion-card-title>{{ciudad}}</ion-card-title>
-        <ion-card-subtitle>{{latitud}}, {{longitud}}</ion-card-subtitle>
-      </ion-card-header>
-      <ion-card-content>
-        <p>{{temperatura}}</p>
-      </ion-card-content>
-    </ion-card>
-   
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div>
+    <div class="img-wrapper">
+      <!-- <div class="img-wrapper" [style.backgroundImage]="'url(' + icon + ')'"> -->
+        <img class="weather-img" src="{{icon}}" alt="" />
+      </div>
+      
+      <div class="weather-wrapper">
+        <div class="location-wrapper">
+          <h5 class="ciudad"><ion-icon style="font-size: smaller;" name="pin"></ion-icon> {{ciudad}}</h5>
+        </div>
+        
+        <div class="details-wrapper">
+          <h1 class="temperatura">{{temperatura}}</h1>
+          <p>{{descripcion|titlecase}} {{temp_max}} / {{temp_min}}C</p>
+          <p>Humedad: {{humedad}}%</p>
+        </div>
+      </div>
+
+    </div>
+
 </ion-content>

@@ -1,4 +1,60 @@
-.welcome-card img {
-  max-height: 35vh;
-  overflow: hidden;
+.no-margin{
+  margin: 0 !important;
+}
+
+.weather-wrapper {
+  color: white;
+
+  .temperatura {
+    font-size: 3rem;
+  }
+
+  .location-wrapper {
+    position: absolute;
+    top: 0;
+    width: -webkit-fill-available;
+    padding: 1rem 2rem;
+  }
+
+  .details-wrapper {
+    position: absolute;
+    bottom: 0;
+    width: -webkit-fill-available;
+    padding: 1rem 2rem;
+
+    p {
+      margin: 5px 0;
+    }
+  }
+}
+
+@keyframes float {
+	0% {
+		transform: translatey(0px);
+	}
+	50% {
+		transform: translatey(-20px);
+	}
+	100% {
+		transform: translatey(0px);
+	}
+}
+
+.img-wrapper {
+  position: absolute;
+  height: -webkit-fill-available;
+  width: -webkit-fill-available;
+  height: 100%;
+  width: 100%;
+  background-color: #4682b4;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  .weather-img {
+    animation: float 10s ease-in-out infinite;
+    max-width: 60%;
+    max-height: 50%;
+  }
 }
