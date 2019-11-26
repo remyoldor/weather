@@ -1,30 +1,19 @@
-<!-- <ion-header>
-  <ion-toolbar>
-    <ion-title class="ion-text-center">
-      Buscar
-    </ion-title>
-  </ion-toolbar>
-</ion-header> -->
 
 <ion-content>
   <ion-toolbar>
-    <ion-searchbar showCancelButton="focus"></ion-searchbar>
+    <form (ngSubmit)="onSubmit()">
+      <ion-searchbar [ngModelOptions]="{standalone: true}" [(ngModel)]="busqueda" animated showCancelButton="focus" debounce=100></ion-searchbar>
+    </form>
   </ion-toolbar>
+
+  
   <ion-list lines="none">
-    <!-- <ion-list-header>
-      <ion-label>Resources</ion-label>
-    </ion-list-header> -->
-    <ion-item href="#">
-      <ion-icon slot="start" color="medium" name="heart"></ion-icon>
-      <ion-label>La Plata</ion-label>
-    </ion-item>
-    <ion-item href="#">
-      <ion-icon slot="start" color="medium" name="heart"></ion-icon>
-      <ion-label>Mar del Plata</ion-label>
-    </ion-item>
-    <ion-item href="#">
-      <ion-icon slot="start" color="medium" name="heart"></ion-icon>
-      <ion-label>Junin</ion-label>
+    <ion-list-header *ngIf="resultados">
+      <ion-label>Resultados</ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let res of resultados" href="javascript:void(0)" (click)="obtenerClima(res.coord_lat, res.coord_lon)">
+      <!-- <ion-icon slot="start" color="medium" name="heart"></ion-icon> -->
+      <ion-label>{{res.name}}, {{res.country}}</ion-label>
     </ion-item>
   </ion-list>
 </ion-content>

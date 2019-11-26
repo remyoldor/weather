@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { Platform } from '@ionic/angular';
+import { HttpClient } from '@angular/common/http';
+import { WeatherService } from '../api/weather.service';
 
 @Component({
   selector: 'app-tab3',
@@ -7,6 +10,38 @@ import { Component } from '@angular/core';
 })
 export class Tab3Page {
 
-  constructor() {}
+  public busqueda   : string = "";
+  public resultados : any    = "";
+  public clima      : any    = "";
+
+  constructor(public platform: Platform, public httpClient: HttpClient, private weather: WeatherService) {}
+
+  onSubmit() {
+    this.weather.getUbicaciones(this.busqueda).subscribe((data) => {
+      // console.log(data);
+      this.resultados = data;
+    })
+    
+  }
+
+  obtenerClima(latitud : number, longitud : number) {
+    this.clima = this.weather.getTemperatura(latitud, longitud).subscribe((data) => {
+      // console.log(data);
+      var obj = <any>data;
+      this.clima = {
+        icon       : "/assets/img/png/" + obj.weather[0].icon.slice(0, 3) + ".png",
+        ciudad     : obj.name,
+        pais       : obj.sys.country,
+        temp       : ((parseFloat(obj.main.temp) - 273.15).toFixed(2)).toString().split(".")[0] + "º",
+        temp_min   : ((parseFloat(obj.main.temp_min) - 273.15).toFixed(2)).toString().split(".")[0] + "º",
+        temp_max   : ((parseFloat(obj.main.temp_max) - 273.15).toFixed(2)).toString().split(".")[0] + "º",
+        humedad    : obj.main.humidity,
+        descripcion: obj.weather[0].description
+      };
+      console.log(this.clima);
+      
+    });
+  //  console.log(this.weather.getTemperatura(latitud, longitud));
+  }
 
 }
