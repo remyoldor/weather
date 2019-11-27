@@ -16,7 +16,7 @@
 @import "~@ionic/angular/css/normalize.css";
 @import "~@ionic/angular/css/structure.css";
 @import "~@ionic/angular/css/typography.css";
-@import '~@ionic/angular/css/display.css';
+@import "~@ionic/angular/css/display.css";
 
 /* Optional CSS utils that can be commented out */
 @import "~@ionic/angular/css/padding.css";
@@ -26,29 +26,123 @@
 @import "~@ionic/angular/css/flex-utils.css";
 
 :root {
-    // --ion-background-color: #404040;
-    // --ion-background-color-rgb: 64,64,64s;
+  // --ion-background-color: #404040;
+  // --ion-background-color-rgb: 64,64,64s;
 
-    // --ion-text-color: #ffffff;
-    // --ion-text-color-rgb: 255,255,255;
+  // --ion-text-color: #ffffff;
+  // --ion-text-color-rgb: 255,255,255;
 
-    --ion-color-step-50: #f2f2f2;
-    --ion-color-step-100: #e6e6e6;
-    --ion-color-step-150: #d9d9d9;
-    --ion-color-step-200: #cccccc;
-    --ion-color-step-250: #bfbfbf;
-    --ion-color-step-300: #b3b3b3;
-    --ion-color-step-350: #a6a6a6;
-    --ion-color-step-400: #999999;
-    --ion-color-step-450: #8c8c8c;
-    --ion-color-step-500: #808080;
-    --ion-color-step-550: #737373;
-    --ion-color-step-600: #666666;
-    --ion-color-step-650: #595959;
-    --ion-color-step-700: #4d4d4d;
-    --ion-color-step-750: #404040;
-    --ion-color-step-800: #333333;
-    --ion-color-step-850: #262626;
-    --ion-color-step-900: #191919;
-    --ion-color-step-950: #0d0d0d;
+  --ion-color-step-50: #f2f2f2;
+  --ion-color-step-100: #e6e6e6;
+  --ion-color-step-150: #d9d9d9;
+  --ion-color-step-200: #cccccc;
+  --ion-color-step-250: #bfbfbf;
+  --ion-color-step-300: #b3b3b3;
+  --ion-color-step-350: #a6a6a6;
+  --ion-color-step-400: #999999;
+  --ion-color-step-450: #8c8c8c;
+  --ion-color-step-500: #808080;
+  --ion-color-step-550: #737373;
+  --ion-color-step-600: #666666;
+  --ion-color-step-650: #595959;
+  --ion-color-step-700: #4d4d4d;
+  --ion-color-step-750: #404040;
+  --ion-color-step-800: #333333;
+  --ion-color-step-850: #262626;
+  --ion-color-step-900: #191919;
+  --ion-color-step-950: #0d0d0d;
 }
+
+.no-margin {
+  margin: 0 !important;
+}
+
+.weather-wrapper {
+  color: white;
+
+  .temperatura {
+    font-size: 3rem;
+  }
+
+  .location-wrapper {
+    position: absolute;
+    top: 0;
+    width: -webkit-fill-available;
+    padding: 1rem 2rem;
+  }
+
+  .details-wrapper {
+    position: absolute;
+    bottom: 0;
+    width: -webkit-fill-available;
+    padding: 1rem 2rem;
+
+    p {
+      margin: 5px 0;
+    }
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translatey(0px);
+  }
+  50% {
+    transform: translatey(-20px);
+  }
+  100% {
+    transform: translatey(0px);
+  }
+}
+
+.img-wrapper {
+  position: absolute;
+  height: -webkit-fill-available;
+  width: -webkit-fill-available;
+  height: 100%;
+  width: 100%;
+  background-color: #4682b4;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .weather-img {
+    animation: float 10s ease-in-out infinite;
+    max-width: 60%;
+    max-height: 50%;
+  }
+}
+
+.btn-volver {
+  color: white;
+  font-size: 2rem;
+  float: right;
+  margin-top: -5px;
+}
+
+.btn-favoritos {
+  color: white;
+  top: 50%;
+  right: 5%;
+  position: absolute;
+  --background: transparent !important;
+  --box-shadow: none !important;
+}
+
+.weather-card {
+  --background: #4682b4;
+  background: #4682b4;
+  --color: white !important;
+  color: white !important;
+}
+
+ion-card{
+  
+  --background: #4682b4;
+  background: #4682b4;
+  --color: white !important;
+  color: white !important;
+}
+
+

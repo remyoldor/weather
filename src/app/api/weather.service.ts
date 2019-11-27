@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,10 +16,13 @@ export class WeatherService {
   public lat: any = "";
   public lon: any = "";
   public timestamp: any = "";
+  public favoritos: BehaviorSubject<any>;
+  public f = [];
 
   constructor(public platform: Platform, public geolocation: Geolocation, public httpClient: HttpClient) {
     this.platform.ready().then(() => {
       this.getUbicacion();
+      this.favoritos = new BehaviorSubject(this.f);
     });
    }
 
@@ -45,6 +49,10 @@ export class WeatherService {
     var url = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitud + "&lon=" + longitud + "&lang=es&appid=" + this.appid;
     return this.httpClient.get(url);
     
+  }
+
+  pushFavoritos(nuevo: any) {
+    this.f.push(nuevo);
   }
 
 

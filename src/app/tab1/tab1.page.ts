@@ -12,7 +12,7 @@ import { WeatherService } from '../api/weather.service';
 })
 export class Tab1Page {
 
-  public loading: boolean = true;
+  public loading: boolean = false;
 
   public lat: any = "";
   public lon: any = "";

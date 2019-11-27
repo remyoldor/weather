@@ -7,39 +7,18 @@
 </ion-header>
 
 <ion-content>
-  <div>
-    <ion-card class="welcome-card">
-      <img src="https://s7d2.scene7.com/is/image/TWCNews/1031_nc_sunny_weather_2-1" alt="" />
+    <!-- <ion-button (click)="onClick()">
+      Click me
+    </ion-button>   -->
+  
+    <ion-card class="weather-card" *ngFor="let f of fav">
       <ion-card-header>
-        <ion-card-subtitle>Get Started</ion-card-subtitle>
-        <ion-card-title>Mar del Plata</ion-card-title>
+        <ion-card-title color="light">{{f.ciudad}}, {{f.pais}}</ion-card-title>
+        <ion-card-subtitle color="light"><p>{{f.descripcion|titlecase}} {{f.temp_max}} / {{f.temp_min}}C</p></ion-card-subtitle>
       </ion-card-header>
-      <ion-card-content>
-        <p>Now that your app has been created, you'll want to start building out features and components. Check out some of
-          the resources below for next steps.</p>
-      </ion-card-content>
+      <!-- <ion-card-content>
+        <p>{{f.descripcion}}</p>
+      </ion-card-content> -->
     </ion-card>
-    <ion-card class="welcome-card">
-      <img src="https://s7d2.scene7.com/is/image/TWCNews/1031_nc_sunny_weather_2-1" alt="" />
-      <ion-card-header>
-        <ion-card-subtitle>Get Started</ion-card-subtitle>
-        <ion-card-title>Mar del Plata</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p>Now that your app has been created, you'll want to start building out features and components. Check out some of
-          the resources below for next steps.</p>
-      </ion-card-content>
-    </ion-card>
-    <ion-card class="welcome-card">
-      <img src="https://s7d2.scene7.com/is/image/TWCNews/1031_nc_sunny_weather_2-1" alt="" />
-      <ion-card-header>
-        <ion-card-subtitle>Get Started</ion-card-subtitle>
-        <ion-card-title>Mar del Plata</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p>Now that your app has been created, you'll want to start building out features and components. Check out some of
-          the resources below for next steps.</p>
-      </ion-card-content>
-    </ion-card>
-  </div>
+    
 </ion-content>

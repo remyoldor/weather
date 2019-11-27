@@ -3,6 +3,7 @@ import { Platform } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 import { WeatherService } from '../api/weather.service';
 
+
 @Component({
   selector: 'app-tab3',
   templateUrl: 'tab3.page.html',
@@ -10,21 +11,34 @@ import { WeatherService } from '../api/weather.service';
 })
 export class Tab3Page {
 
-  public busqueda   : string = "";
-  public resultados : any    = "";
-  public clima      : any    = "";
+  public busqueda   : string  = ""   ;
+  public resultados : any     = ""   ;
+  public clima      : any     = ""   ;
+  public loading    : boolean = false;
+  public selected   : boolean = false;
 
   constructor(public platform: Platform, public httpClient: HttpClient, private weather: WeatherService) {}
+
 
   onSubmit() {
     this.weather.getUbicaciones(this.busqueda).subscribe((data) => {
       // console.log(data);
       this.resultados = data;
     })
-    
+  }
+
+  volver(){
+    this.selected = false;
+  }
+
+  agregarFavoritos() {
+    this.weather.pushFavoritos(this.clima);
+    // this.messageEvent.emit(this.clima)
+
   }
 
   obtenerClima(latitud : number, longitud : number) {
+    
     this.clima = this.weather.getTemperatura(latitud, longitud).subscribe((data) => {
       // console.log(data);
       var obj = <any>data;
@@ -39,7 +53,7 @@ export class Tab3Page {
         descripcion: obj.weather[0].description
       };
       console.log(this.clima);
-      
+      this.selected = true;
     });
   //  console.log(this.weather.getTemperatura(latitud, longitud));
   }

@@ -1,19 +1,52 @@
-
 <ion-content>
-  <ion-toolbar>
-    <form (ngSubmit)="onSubmit()">
-      <ion-searchbar [ngModelOptions]="{standalone: true}" [(ngModel)]="busqueda" animated showCancelButton="focus" debounce=100></ion-searchbar>
-    </form>
-  </ion-toolbar>
 
-  
-  <ion-list lines="none">
-    <ion-list-header *ngIf="resultados">
-      <ion-label>Resultados</ion-label>
-    </ion-list-header>
-    <ion-item *ngFor="let res of resultados" href="javascript:void(0)" (click)="obtenerClima(res.coord_lat, res.coord_lon)">
-      <!-- <ion-icon slot="start" color="medium" name="heart"></ion-icon> -->
-      <ion-label>{{res.name}}, {{res.country}}</ion-label>
-    </ion-item>
-  </ion-list>
+  <ng-template [ngIf]="!selected" [ngIfElse]="view">
+    <ion-toolbar>
+      <form (ngSubmit)="onSubmit()">
+        <ion-searchbar [ngModelOptions]="{standalone: true}" [(ngModel)]="busqueda" animated showCancelButton="focus"
+          debounce=100 placeholder="Buscar una ciudad"></ion-searchbar>
+      </form>
+    </ion-toolbar>
+
+
+    <ion-list lines="none">
+      <ion-list-header *ngIf="resultados">
+        <ion-label>Resultados</ion-label>
+      </ion-list-header>
+      <ion-item *ngFor="let res of resultados" href="javascript:void(0)"
+        (click)="obtenerClima(res.coord_lat, res.coord_lon)">
+        <!-- <ion-icon slot="start" color="medium" name="heart"></ion-icon> -->
+        <ion-label>{{res.name}}, {{res.country}}</ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-template>
+
+  <ng-template #view>
+    <div class="img-wrapper">
+      <img class="weather-img" src="{{clima.icon}}" alt="" />
+    </div>
+
+    <div class="weather-wrapper">
+      <div class="location-wrapper">
+        <h5 class="ciudad">
+          {{clima.ciudad}}, {{clima.pais}}
+          <a class="btn-volver" (click)="volver()"><ion-icon name="close-circle-outline"></ion-icon></a>
+        </h5>
+      </div>
+
+      <div class="details-wrapper">
+        <h1 class="temperatura">{{clima.temp}}</h1>
+        <p>{{clima.descripcion|titlecase}} {{clima.temp_max}} / {{clima.temp_min}}C</p>
+        <p>Humedad: {{clima.humedad}}%</p>
+        <ion-button (click)="agregarFavoritos()" class="btn-favoritos">
+          <!-- <ion-icon slot="icon-only" name="heart"></ion-icon> -->
+          <ion-icon slot="icon-only" name="heart-empty"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  </ng-template>
+
+
+
+
 </ion-content>
