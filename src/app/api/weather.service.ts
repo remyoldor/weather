@@ -3,6 +3,7 @@ import { Platform } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
+import { Storage } from '@ionic/storage';
 
 @Injectable({
   providedIn: 'root'
@@ -16,13 +17,15 @@ export class WeatherService {
   public lat: any = "";
   public lon: any = "";
   public timestamp: any = "";
-  public favoritos: BehaviorSubject<any>;
-  public f = [];
+  public fobs: BehaviorSubject<any>;
+  public favoritos = [];
 
-  constructor(public platform: Platform, public geolocation: Geolocation, public httpClient: HttpClient) {
+  constructor(public platform: Platform, public geolocation: Geolocation, public httpClient: HttpClient, private storage: Storage) {
     this.platform.ready().then(() => {
-      this.getUbicacion();
-      this.favoritos = new BehaviorSubject(this.f);
+
+      // this.getUbicacion();
+      this.getFavoritos();
+
     });
    }
 
@@ -52,7 +55,20 @@ export class WeatherService {
   }
 
   pushFavoritos(nuevo: any) {
-    this.f.push(nuevo);
+    console.log(this.favoritos);
+    
+    this.favoritos.push(nuevo);
+    this.storage.set("favoritos",this.favoritos );
+  }
+  
+  getFavoritos () {
+    this.storage.get('favoritos').then((val) => {
+      console.log("Get favoritos:",val);
+      if (val != null) {
+        this.favoritos = val;
+      }
+    });
+    this.fobs = new BehaviorSubject(this.favoritos);
   }
 
 

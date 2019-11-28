@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 import { WeatherService } from '../api/weather.service';
+import { Storage } from '@ionic/storage';
 
 
 @Component({
@@ -9,7 +10,7 @@ import { WeatherService } from '../api/weather.service';
   templateUrl: 'tab3.page.html',
   styleUrls: ['tab3.page.scss']
 })
-export class Tab3Page {
+export class Tab3Page implements OnInit {
 
   public busqueda   : string  = ""   ;
   public resultados : any     = ""   ;
@@ -17,8 +18,11 @@ export class Tab3Page {
   public loading    : boolean = false;
   public selected   : boolean = false;
 
-  constructor(public platform: Platform, public httpClient: HttpClient, private weather: WeatherService) {}
+  constructor(public platform: Platform, public httpClient: HttpClient, private weather: WeatherService, private storage: Storage) {  }
 
+  ngOnInit() {
+
+  }
 
   onSubmit() {
     this.weather.getUbicaciones(this.busqueda).subscribe((data) => {
@@ -33,8 +37,6 @@ export class Tab3Page {
 
   agregarFavoritos() {
     this.weather.pushFavoritos(this.clima);
-    // this.messageEvent.emit(this.clima)
-
   }
 
   obtenerClima(latitud : number, longitud : number) {

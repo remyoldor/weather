@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 import { WeatherService } from '../api/weather.service';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-tab2',
@@ -9,25 +10,23 @@ import { WeatherService } from '../api/weather.service';
   styleUrls: ['tab2.page.scss']
 })
 
-export class Tab2Page implements OnInit {
+export class Tab2Page {
 
-  public fav  = [];
+  public favoritos  = [];
 
-  constructor(public platform: Platform, public httpClient: HttpClient, private weather: WeatherService) {
+  constructor(public platform: Platform, public httpClient: HttpClient, private weather: WeatherService, private storage: Storage) {
     this.platform.ready().then(() => {
-      // console.log(this.fav);
-      this.weather.favoritos.subscribe( fav => {
-        this.fav = fav;
+
+      this.weather.fobs.subscribe( fav => {
+        console.log("Get fobs",fav);
+        this.favoritos = fav;
       });
+      
     });
   }
 
-  ngOnInit() {
-  }
-
   onClick(){
-    console.log(this.fav);
-    
+    console.log(this.favoritos);
   }
 
 }
