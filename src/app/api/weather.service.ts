@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { HttpClient } from '@angular/common/http';
@@ -8,8 +8,8 @@ import { Storage } from '@ionic/storage';
 @Injectable({
   providedIn: 'root'
 })
-export class WeatherService {
-  
+export class WeatherService implements OnInit {
+
   private appid = "d501e92ea8e61ca515352dfa01e4fc3d";
 
   public weather: any;
@@ -17,17 +17,22 @@ export class WeatherService {
   public lat: any = "";
   public lon: any = "";
   public timestamp: any = "";
-  public fobs: BehaviorSubject<any>;
   public favoritos = [];
+  public fobs: BehaviorSubject<any>;
 
   constructor(public platform: Platform, public geolocation: Geolocation, public httpClient: HttpClient, private storage: Storage) {
+    
     this.platform.ready().then(() => {
-
       // this.getUbicacion();
       this.getFavoritos();
-
     });
-   }
+  }
+
+  ngOnInit() {
+    // this.fobs = new BehaviorSubject(this.favoritos);
+    console.log("Que haces aca");
+    
+  }
 
   getUbicacion() {
     this.geolocation.getCurrentPosition().then((resp) => {
@@ -39,36 +44,37 @@ export class WeatherService {
     });
   }
 
-  getUbicaciones(busqueda : string) {
+  getUbicaciones(busqueda: string) {
 
     console.log(busqueda)
 
     var url = "https://apiciudades.000webhostapp.com/cities?city=" + busqueda;
     return this.httpClient.get(url);
   }
-  
-  getTemperatura(latitud : number, longitud : number) {
-    
+
+  getTemperatura(latitud: number, longitud: number) {
+
     var url = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitud + "&lon=" + longitud + "&lang=es&appid=" + this.appid;
     return this.httpClient.get(url);
-    
+
   }
 
   pushFavoritos(nuevo: any) {
     console.log(this.favoritos);
-    
     this.favoritos.push(nuevo);
-    this.storage.set("favoritos",this.favoritos );
+    this.storage.set("favoritos", this.favoritos);
   }
-  
-  getFavoritos () {
+
+  getFavoritos() {
+
     this.storage.get('favoritos').then((val) => {
-      console.log("Get favoritos:",val);
-      if (val != null) {
-        this.favoritos = val;
-      }
+      
+      console.log("Get favoritos:", val);
+      this.favoritos = val;
+      this.fobs = new BehaviorSubject(this.favoritos)
+      console.log("Get fobs:", this.fobs);
+
     });
-    this.fobs = new BehaviorSubject(this.favoritos);
   }
 
 

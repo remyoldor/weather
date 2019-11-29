@@ -22,10 +22,13 @@ export class Tab1Page {
   constructor(public platform: Platform, public geolocation: Geolocation, public httpClient: HttpClient, public weather: WeatherService, private storage: Storage) {
 
     this.platform.ready().then(() => {
-      console.log("Data Storage");
-
+      
       this.storage.get('local_clima').then((val) => {
-        this.local_clima = val;
+        console.log("Data Storage", val);
+        if (val != null){
+          this.local_clima = val;
+        }
+        console.log("Local clima", this.local_clima);
       });
       
       console.log("Nueva info");
