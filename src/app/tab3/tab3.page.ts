@@ -12,22 +12,22 @@ import { Storage } from '@ionic/storage';
 })
 export class Tab3Page {
 
-  public busqueda   : string  = ""   ;
-  public resultados : any     = ""   ;
-  public clima      : any     = ""   ;
-  public loading    : boolean = false;
-  public selected   : boolean = false;
+  public busqueda: string = "";
+  public resultados: any = "";
+  public clima: any = "";
+  public loading: boolean = false;
+  public selected: boolean = false;
 
-  constructor(public platform: Platform, public httpClient: HttpClient, private weather: WeatherService, private storage: Storage) {  }
+  constructor(public platform: Platform, public httpClient: HttpClient, private weather: WeatherService, private storage: Storage) { }
 
   onSubmit() {
-    this.weather.getUbicaciones(this.busqueda).subscribe((data) => {
+    this.weather.getClimaCiudad(this.busqueda).subscribe((data) => {
       // console.log(data);
       this.resultados = data;
     })
   }
 
-  volver(){
+  volver() {
     this.selected = false;
   }
 
@@ -35,25 +35,29 @@ export class Tab3Page {
     this.weather.pushFavoritos(this.clima);
   }
 
-  obtenerClima(latitud : number, longitud : number) {
-    
-    this.clima = this.weather.getTemperatura(latitud, longitud).subscribe((data) => {
-      // console.log(data);
+  obtenerClima(latitud: number, longitud: number) {
+
+    this.clima = this.weather.getClima(latitud, longitud).subscribe((data) => {
+      console.log("Response api:", data);
       var obj = <any>data;
       this.clima = {
-        icon       : "/assets/img/png/" + obj.weather[0].icon.slice(0, 3) + ".png",
+        id         : obj.id,
         ciudad     : obj.name,
         pais       : obj.sys.country,
         temp       : ((parseFloat(obj.main.temp) - 273.15).toFixed(2)).toString().split(".")[0] + "º",
         temp_min   : ((parseFloat(obj.main.temp_min) - 273.15).toFixed(2)).toString().split(".")[0] + "º",
         temp_max   : ((parseFloat(obj.main.temp_max) - 273.15).toFixed(2)).toString().split(".")[0] + "º",
         humedad    : obj.main.humidity,
+        icon       : "/assets/img/png/" + obj.weather[0].icon.slice(0, 3) + ".png",
         descripcion: obj.weather[0].description
+
       };
       console.log(this.clima);
       this.selected = true;
-    });
-  //  console.log(this.weather.getTemperatura(latitud, longitud));
+    },
+      error => {
+        console.log(error)
+      });
   }
 
 }

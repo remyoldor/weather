@@ -1,6 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
-import { Platform } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { Platform } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { Storage } from '@ionic/storage';
@@ -8,51 +8,30 @@ import { Storage } from '@ionic/storage';
 @Injectable({
   providedIn: 'root'
 })
-export class WeatherService implements OnInit {
+export class WeatherService {
 
   private appid = "d501e92ea8e61ca515352dfa01e4fc3d";
 
-  public weather: any;
-
   public lat: any = "";
   public lon: any = "";
-  public timestamp: any = "";
   public favoritos = [];
   public fobs: BehaviorSubject<any>;
 
-  constructor(public platform: Platform, public geolocation: Geolocation, public httpClient: HttpClient, private storage: Storage) {
-    
+  constructor(public platform: Platform, public httpClient: HttpClient, private storage: Storage, public geolocation: Geolocation) {
+    console.log("Servicio listo");
     this.platform.ready().then(() => {
-      // this.getUbicacion();
       this.getFavoritos();
     });
+
   }
 
-  ngOnInit() {
-    // this.fobs = new BehaviorSubject(this.favoritos);
-    console.log("Que haces aca");
-    
-  }
-
-  getUbicacion() {
-    this.geolocation.getCurrentPosition().then((resp) => {
-      this.lat = resp.coords.latitude;
-      this.lon = resp.coords.longitude;
-      this.getTemperatura(this.lat, this.lon);
-    }).catch((error) => {
-      console.log('Ha ocurrido un error obteniendo la ubicacion: ', error);
-    });
-  }
-
-  getUbicaciones(busqueda: string) {
-
-    console.log(busqueda)
+  getClimaCiudad(busqueda: string) {
 
     var url = "https://apiciudades.000webhostapp.com/cities?city=" + busqueda;
     return this.httpClient.get(url);
   }
 
-  getTemperatura(latitud: number, longitud: number) {
+  getClima(latitud: number, longitud: number) {
 
     var url = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitud + "&lon=" + longitud + "&lang=es&appid=" + this.appid;
     return this.httpClient.get(url);
@@ -60,17 +39,39 @@ export class WeatherService implements OnInit {
   }
 
   pushFavoritos(nuevo: any) {
-    console.log(this.favoritos);
+    // console.log(this.favoritos);
     this.favoritos.push(nuevo);
     this.storage.set("favoritos", this.favoritos);
+  }
+
+  removeFavoritos(id : number) {
+    console.log("Se borrara con el id: ", id);
+    // this.favoritos.find(f => f.id === id);
+    // this.storage.set("favoritos", this.favoritos);
+
+    this.favoritos = this.favoritos.filter(function (el) {
+      if (el.id === id) {
+        return false;
+      }
+      return true;
+    });
+
+    console.log("Resultado", this.favoritos);
+    
   }
 
   getFavoritos() {
 
     this.storage.get('favoritos').then((val) => {
       
-      console.log("Get favoritos:", val);
-      this.favoritos = val;
+      console.log("Get favoritos before:", val);
+      if (val != null) {
+        this.favoritos = val;
+      } else {
+        this.favoritos = [];
+      }
+      console.log("Get favoritos after:", val);
+      
       this.fobs = new BehaviorSubject(this.favoritos)
       console.log("Get fobs:", this.fobs);
 

@@ -15,36 +15,37 @@ export class Tab1Page {
 
   public loading: boolean = false;
 
-  public local_coords = {};
-  public local_clima: any = "";
+  public coords = {
+    lat: null,
+    lon: null
+  };
+  public clima = {};
 
 
   constructor(public platform: Platform, public geolocation: Geolocation, public httpClient: HttpClient, public weather: WeatherService, private storage: Storage) {
+    console.log("Tab1 Listo");
 
     this.platform.ready().then(() => {
-      
-      this.storage.get('local_clima').then((val) => {
-        console.log("Data Storage", val);
-        if (val != null){
-          this.local_clima = val;
+      this.loading = true;
+      // this.storage.clear("favoritos");
+      this.storage.get('clima').then((val) => {
+        console.log("Info en storage", val);
+        if (val != null) {
+          this.clima = val;
         }
-        console.log("Local clima", this.local_clima);
       });
-      
-      console.log("Nueva info");
-      this.getUbicacion();
+      this.getGeolocation();
+      this.loading = false;
     });
-
   }
 
   doRefresh(refresher) {
-    
-    this.getUbicacion();
 
+    this.getGeolocation();
     setTimeout(() => {
-      console.log('Async operation has ended');
+      // console.log('Async operation has ended');
       refresher.target.complete();
-    }, 2000);
+    }, 1500);
   }
 
   currentDate() {
@@ -55,36 +56,36 @@ export class Tab1Page {
     return date + " " + time + " hs."
   }
 
-  getUbicacion() {
+  getGeolocation() {
     this.geolocation.getCurrentPosition().then((resp) => {
-      this.local_coords = {
+      this.coords = {
         lat: resp.coords.latitude,
         lon: resp.coords.longitude
       };
-      this.obtenerClima(resp.coords.latitude, resp.coords.longitude);
+      this.obtenerClima();
     }).catch((error) => {
       console.log('Ha ocurrido un error obteniendo la ubicacion: ', error);
     });
   }
 
 
-  obtenerClima(latitud: number, longitud: number) {
-    this.weather.getTemperatura(latitud, longitud).subscribe((data) => {
+  obtenerClima() {
+    this.weather.getClima(this.coords.lat, this.coords.lon).subscribe((data) => {
       // console.log(data);
       var obj = <any>data;
-      this.local_clima = {
-        icon        : "/assets/img/png/" + obj.weather[0].icon.slice(0, 3) + ".png",
-        ciudad      : obj.name,
-        pais        : obj.sys.country,
-        temp        : ((parseFloat(obj.main.temp) - 273.15).toFixed(2)).toString().split(".")[0] + "º",
-        temp_min    : ((parseFloat(obj.main.temp_min) - 273.15).toFixed(2)).toString().split(".")[0] + "º",
-        temp_max    : ((parseFloat(obj.main.temp_max) - 273.15).toFixed(2)).toString().split(".")[0] + "º",
-        humedad     : obj.main.humidity,
-        descripcion : obj.weather[0].description,
-        fecha       : this.currentDate()
+      this.clima = {
+        fecha: this.currentDate(),
+        ciudad: obj.name,
+        pais: obj.sys.country,
+        temp: ((parseFloat(obj.main.temp) - 273.15).toFixed(2)).toString().split(".")[0] + "º",
+        temp_min: ((parseFloat(obj.main.temp_min) - 273.15).toFixed(2)).toString().split(".")[0] + "º",
+        temp_max: ((parseFloat(obj.main.temp_max) - 273.15).toFixed(2)).toString().split(".")[0] + "º",
+        humedad: obj.main.humidity,
+        descripcion: obj.weather[0].description,
+        icon: "/assets/img/png/" + obj.weather[0].icon.slice(0, 3) + ".png"
       };
-      console.log(this.local_clima);
-      this.storage.set("local_clima", this.local_clima);
+      console.log(this.clima);
+      this.storage.set("clima", this.clima);
     });
 
   }

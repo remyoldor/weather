@@ -11,25 +11,32 @@ import { WeatherService } from '../api/weather.service';
 
 export class Tab2Page implements OnInit {
 
-  public favoritos  = [];
+  public favoritos = [];
 
   constructor(public platform: Platform, public httpClient: HttpClient, private weather: WeatherService) {
     this.platform.ready().then(() => {
 
-      this.weather.fobs.subscribe( fav => {
+      this.weather.fobs.subscribe(fav => {
         // console.log("Get fobs",fav);
         this.favoritos = fav;
       });
-      
+
     });
   }
 
-  ngOnInit(){
-    
+  ngOnInit() {
+
   }
 
-  onClick(){
+  onClick() {
     console.log(this.favoritos);
+  }
+
+  eliminar(id: number) {
+    // alert(id);
+
+    this.weather.removeFavoritos(id)
+
   }
 
 }

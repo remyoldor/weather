@@ -121,6 +121,12 @@
   margin-top: -5px;
 }
 
+.btn-eliminar {
+  color: white;
+  font-size: 1.3rem;
+  float: right;
+}
+
 .btn-favoritos {
   color: white;
   top: 50%;
@@ -143,6 +149,15 @@ ion-card{
   background: #4682b4;
   --color: white !important;
   color: white !important;
+}
+
+.weather-icon{
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto !important;
+    height: 100%;
+    padding: 15px;
 }
 
 
