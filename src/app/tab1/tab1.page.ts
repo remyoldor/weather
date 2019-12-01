@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { WeatherService } from '../api/weather.service';
 import { Storage } from '@ionic/storage';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab1',
@@ -22,14 +23,14 @@ export class Tab1Page {
   public clima = {};
 
 
-  constructor(public platform: Platform, public geolocation: Geolocation, public httpClient: HttpClient, public weather: WeatherService, private storage: Storage) {
+  constructor(public platform: Platform, public geolocation: Geolocation, public httpClient: HttpClient, public weather: WeatherService, private storage: Storage, public alertController: AlertController) {
     console.log("Tab1 Listo");
 
     this.platform.ready().then(() => {
       this.loading = true;
-      // this.storage.clear("favoritos");
+      // this.storage.remove("favoritos");
       this.storage.get('clima').then((val) => {
-        console.log("Info en storage", val);
+        // console.log("Info en storage", val);
         if (val != null) {
           this.clima = val;
         }
@@ -48,6 +49,16 @@ export class Tab1Page {
     }, 1500);
   }
 
+  async presentAlert(error : string) {
+    const alert = await this.alertController.create({
+      header: 'Activa ubicación',
+      message: error,
+      buttons: ['Aceptar']
+    });
+
+    await alert.present();
+  }
+
   currentDate() {
     var today = new Date();
     var date = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
@@ -64,7 +75,8 @@ export class Tab1Page {
       };
       this.obtenerClima();
     }).catch((error) => {
-      console.log('Ha ocurrido un error obteniendo la ubicacion: ', error);
+      // console.log('Ha ocurrido un error obteniendo la ubicacion: ', error);
+      this.presentAlert('La señal de GPS no esta disponible')
     });
   }
 
@@ -84,7 +96,7 @@ export class Tab1Page {
         descripcion: obj.weather[0].description,
         icon: "/assets/img/png/" + obj.weather[0].icon.slice(0, 3) + ".png"
       };
-      console.log(this.clima);
+      console.log("Informacion clima local actualizada: ",this.clima);
       this.storage.set("clima", this.clima);
     });
 

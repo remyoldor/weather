@@ -12,18 +12,19 @@ import { Storage } from '@ionic/storage';
 })
 export class Tab3Page {
 
-  public busqueda: string = "";
-  public resultados: any = "";
-  public clima: any = "";
-  public loading: boolean = false;
-  public selected: boolean = false;
+  public busqueda  : string  = ""   ;
+  public resultados: any     = ""   ;
+  public clima     : any     = ""   ;
+  public loading   : boolean = false;
+  public selected  : boolean = false;
 
   constructor(public platform: Platform, public httpClient: HttpClient, private weather: WeatherService, private storage: Storage) { }
 
   onSubmit() {
+    this.loading = true;
     this.weather.getClimaCiudad(this.busqueda).subscribe((data) => {
-      // console.log(data);
       this.resultados = data;
+      this.loading = false;
     })
   }
 
@@ -31,17 +32,23 @@ export class Tab3Page {
     this.selected = false;
   }
 
+  borrar(){
+    this.busqueda = "";
+    this.resultados = null;
+  }
+
   agregarFavoritos() {
     this.weather.pushFavoritos(this.clima);
   }
 
   obtenerClima(latitud: number, longitud: number) {
-
+    this.loading = true;
     this.clima = this.weather.getClima(latitud, longitud).subscribe((data) => {
       console.log("Response api:", data);
       var obj = <any>data;
       this.clima = {
         id         : obj.id,
+        fecha      : this.currentDate(),
         ciudad     : obj.name,
         pais       : obj.sys.country,
         temp       : ((parseFloat(obj.main.temp) - 273.15).toFixed(2)).toString().split(".")[0] + "º",
@@ -50,14 +57,22 @@ export class Tab3Page {
         humedad    : obj.main.humidity,
         icon       : "/assets/img/png/" + obj.weather[0].icon.slice(0, 3) + ".png",
         descripcion: obj.weather[0].description
-
       };
       console.log(this.clima);
+      this.loading = false;
       this.selected = true;
     },
       error => {
         console.log(error)
       });
+  }
+
+  currentDate() {
+    var today = new Date();
+    var date = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
+    var time = today.getHours() + ":" + ((today.getMinutes() < 10) ? "0" : "") + today.getMinutes();
+
+    return date + " " + time + " hs."
   }
 
 }

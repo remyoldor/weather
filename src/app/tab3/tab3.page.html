@@ -4,14 +4,15 @@
     <ion-toolbar>
       <form (ngSubmit)="onSubmit()">
         <ion-searchbar [ngModelOptions]="{standalone: true}" [(ngModel)]="busqueda" animated showCancelButton="focus"
-          debounce=100 placeholder="Buscar una ciudad"></ion-searchbar>
+          debounce=100 placeholder="Buscar una ciudad" (ionClear)="borrar()"></ion-searchbar>
       </form>
     </ion-toolbar>
+    <ion-progress-bar *ngIf="loading" type="indeterminate" reversed="true"></ion-progress-bar>
 
 
     <ion-list lines="none">
-      <ion-list-header *ngIf="resultados">
-        <ion-label>Resultados</ion-label>
+      <ion-list-header>
+        <ion-label *ngIf="resultados?.length > 0">Resultados</ion-label>
       </ion-list-header>
       <ion-item *ngFor="let res of resultados" href="javascript:void(0)"
         (click)="obtenerClima(res.coord_lat, res.coord_lon)">
