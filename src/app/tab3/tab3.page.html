@@ -41,7 +41,8 @@
         <p>Humedad: {{clima.humedad}}%</p>
         <ion-button (click)="agregarFavoritos()" class="btn-favoritos">
           <!-- <ion-icon slot="icon-only" name="heart"></ion-icon> -->
-          <ion-icon slot="icon-only" name="heart-empty"></ion-icon>
+          <ion-icon *ngIf="!favClick" slot="icon-only" name="heart-empty"></ion-icon>
+          <ion-icon *ngIf="favClick" slot="icon-only" color="danger" name="heart"></ion-icon>
         </ion-button>
       </div>
     </div>

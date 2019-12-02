@@ -26,17 +26,28 @@ export class Tab2Page {
     
   }
   
-  actualizar() {
-    
-    setTimeout(() => {
+  doRefresh(refresher) {
+    this.loading = true;
+    this.actualizar();
+    refresher.target.complete();
+  }
+  
+  async actualizar() {
+
+    // var b = <boolean>await this.weather.getFavoritos();
+
+    this.weather.getFavoritos().then( (b) => {
+      console.log("Devolvio:",b);
+      
       this.weather.fobs.subscribe(fav => {
-        // console.log("Get fobs",fav);
+        console.log("Get fobs",fav);
         this.favoritos = fav;
         this.loading = false;
       });
+      // this.loading = true;
       console.log("Tab2 actualizar",this.favoritos);
-    }, 2000);
-
+    })
+    
   }
 
   eliminar(id: number) {

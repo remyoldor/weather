@@ -144,10 +144,15 @@
 }
 
 ion-card{
-  
   --background: #4682b4;
   background: #4682b4;
   --color: white !important;
+  color: white !important;
+}
+
+ion-spinner.tiny{
+  height: 16px !important;
+  width: 16px !important;
   color: white !important;
 }
 

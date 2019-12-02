@@ -3,6 +3,7 @@ import { Platform } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 import { WeatherService } from '../api/weather.service';
 import { Storage } from '@ionic/storage';
+import { ToastController } from '@ionic/angular';
 
 
 @Component({
@@ -12,13 +13,16 @@ import { Storage } from '@ionic/storage';
 })
 export class Tab3Page {
 
-  public busqueda  : string  = ""   ;
-  public resultados: any     = ""   ;
-  public clima     : any     = ""   ;
-  public loading   : boolean = false;
-  public selected  : boolean = false;
+  public busqueda   : string  = ""   ;
+  public resultados : any     = ""   ;
+  public clima      : any     = ""   ;
+  public loading    : boolean = false;
+  public selected   : boolean = false;
+  public favClick   : boolean = false;
 
-  constructor(public platform: Platform, public httpClient: HttpClient, private weather: WeatherService, private storage: Storage) { }
+  constructor(public platform: Platform, public httpClient: HttpClient, private weather: WeatherService, private storage: Storage, public toastController: ToastController) {
+    // weather.getFavoritos();
+   }
 
   onSubmit() {
     this.loading = true;
@@ -30,6 +34,7 @@ export class Tab3Page {
 
   volver() {
     this.selected = false;
+    this.favClick = false;
   }
 
   borrar(){
@@ -38,6 +43,8 @@ export class Tab3Page {
   }
 
   agregarFavoritos() {
+    this.favClick = true;
+    this.presentToast(this.clima.ciudad + " se ha añadido a favoritos.")
     this.weather.pushFavoritos(this.clima);
   }
 
@@ -73,6 +80,22 @@ export class Tab3Page {
     var time = today.getHours() + ":" + ((today.getMinutes() < 10) ? "0" : "") + today.getMinutes();
 
     return date + " " + time + " hs."
+  }
+
+  async presentToast(msg: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      color: 'dark',
+      position: 'top',
+      duration: 2000,
+      buttons: [
+        {
+          side: 'start',
+          icon: 'heart',
+        }
+      ]
+    });
+    toast.present();
   }
 
 }

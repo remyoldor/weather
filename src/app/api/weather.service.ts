@@ -36,7 +36,7 @@ export class WeatherService {
 
   }
 
-  getClimaById(id : number) {
+  getClimaById(id: number) {
 
     var url = "https://api.openweathermap.org/data/2.5/weather?id=" + id + "&lang=es&appid=" + this.appid;
     return this.httpClient.get(url);
@@ -46,10 +46,12 @@ export class WeatherService {
   pushFavoritos(nuevo: any) {
     this.favoritos.push(nuevo);
     this.storage.set("favoritos", this.favoritos);
+    console.log(this.fobs);
+    
     console.log(this.favoritos);
   }
 
-  removeFavoritos(id : number) {
+  removeFavoritos(id: number) {
     console.log("Se borrara con el id: ", id);
     // this.favoritos.find(f => f.id === id);
     // this.storage.set("favoritos", this.favoritos);
@@ -62,58 +64,67 @@ export class WeatherService {
     });
 
     console.log("Resultado", this.favoritos);
-    
+
   }
 
   getFavoritos() {
 
-    this.storage.get('favoritos').then((val) => {
-      
-      console.log("Get favoritos before:", val);
-      if (val != null) {
-        this.favoritos = val;
-      } else {
-        this.favoritos = [];
-      }
-      console.log("Get favoritos after:", val);
-      this.actualizarFavoritos();
+    return new Promise(resolve => {
+      var res: boolean;
 
-    });
+      this.storage.get('favoritos').then(async (val) => {
+
+        console.log("Get favoritos before:", val);
+        if (val != null) {
+          this.favoritos = val;
+        } else {
+          this.favoritos = [];
+        }
+        console.log("Get favoritos after:", val);
+        res = <boolean>await this.actualizarFavoritos();
+        resolve(res)
+      });
+    })
   }
 
   actualizarFavoritos() {
 
-    var favoritosAux = [];
-    console.log("antes de actualizar", this.favoritos);
-    
-    this.favoritos.forEach(el => {
-      
-      this.getClimaById(el.id).subscribe((data) => {
-        var obj = <any>data;
-        el = {
-          id         : obj.id,
-          fecha      : this.currentDate(),
-          ciudad     : obj.name,
-          pais       : obj.sys.country,
-          temp       : ((parseFloat(obj.main.temp) - 273.15).toFixed(2)).toString().split(".")[0] + "º",
-          temp_min   : ((parseFloat(obj.main.temp_min) - 273.15).toFixed(2)).toString().split(".")[0] + "º",
-          temp_max   : ((parseFloat(obj.main.temp_max) - 273.15).toFixed(2)).toString().split(".")[0] + "º",
-          humedad    : obj.main.humidity,
-          icon       : "/assets/img/png/" + obj.weather[0].icon.slice(0, 3) + ".png",
-          descripcion: obj.weather[0].description
-        };
-        favoritosAux.push(el);
-      },
-      error => {
-        console.log(error)
+    return new Promise(resolve => {
+      var favoritosAux = [];
+      console.log("antes de actualizar", this.favoritos);
+
+      this.favoritos.forEach(el => {
+
+        this.getClimaById(el.id).subscribe((data) => {
+          var obj = <any>data;
+          el = {
+            id: obj.id,
+            fecha: this.currentDate(),
+            ciudad: obj.name,
+            pais: obj.sys.country,
+            temp: ((parseFloat(obj.main.temp) - 273.15).toFixed(2)).toString().split(".")[0] + "º",
+            temp_min: ((parseFloat(obj.main.temp_min) - 273.15).toFixed(2)).toString().split(".")[0] + "º",
+            temp_max: ((parseFloat(obj.main.temp_max) - 273.15).toFixed(2)).toString().split(".")[0] + "º",
+            humedad: obj.main.humidity,
+            icon: "/assets/img/png/" + obj.weather[0].icon.slice(0, 3) + ".png",
+            descripcion: obj.weather[0].description
+          };
+          favoritosAux.push(el);
+        },
+          error => {
+            console.log(error)
+          });
       });
-    });
-    setTimeout(() => {
-      this.favoritos = favoritosAux;
-      this.storage.set("favoritos", this.favoritos);
-      this.fobs = new BehaviorSubject(this.favoritos);
-      console.log("Despues de actualizar", this.favoritos);
-    }, 1500);
+
+      setTimeout(() => {
+        this.favoritos = favoritosAux;
+        this.storage.set("favoritos", this.favoritos);
+        this.fobs = new BehaviorSubject(this.favoritos);
+        console.log("Despues de actualizar", this.favoritos);
+        resolve(true)
+      }, 1500);
+      
+    })
   }
 
   currentDate() {

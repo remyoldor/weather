@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { WeatherService } from '../api/weather.service';
 import { Storage } from '@ionic/storage';
-import { AlertController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab1',
@@ -14,7 +14,7 @@ import { AlertController } from '@ionic/angular';
 })
 export class Tab1Page {
 
-  public loading: boolean = false;
+  public loading: boolean = true;
 
   public coords = {
     lat: null,
@@ -23,40 +23,51 @@ export class Tab1Page {
   public clima = {};
 
 
-  constructor(public platform: Platform, public geolocation: Geolocation, public httpClient: HttpClient, public weather: WeatherService, private storage: Storage, public alertController: AlertController) {
+  constructor(public platform: Platform, public geolocation: Geolocation, public httpClient: HttpClient, public weather: WeatherService, private storage: Storage, public toastController: ToastController) {
     console.log("Tab1 Listo");
 
-    this.platform.ready().then(() => {
-      this.loading = true;
+    this.platform.ready().then(async () => {
       // this.storage.remove("favoritos");
       this.storage.get('clima').then((val) => {
-        // console.log("Info en storage", val);
         if (val != null) {
           this.clima = val;
         }
       });
-      this.getGeolocation();
+      this.doRefresh(null);
+    });
+
+  }
+
+  async doRefresh(refresher) {
+
+    await this.getGeolocation().then((res) => {
+      if (res) {
+        this.obtenerClima();
+      }
+    }).finally(() => {
+      if (refresher != null) {
+        refresher.target.complete();
+      }
       this.loading = false;
     });
+
   }
 
-  doRefresh(refresher) {
-
-    this.getGeolocation();
-    setTimeout(() => {
-      // console.log('Async operation has ended');
-      refresher.target.complete();
-    }, 1500);
-  }
-
-  async presentAlert(error : string) {
-    const alert = await this.alertController.create({
-      header: 'Activa ubicación',
-      message: error,
-      buttons: ['Aceptar']
+  async presentToast(msg: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      color: 'dark',
+      // header: 'No se pudo obtener la ubicación.',
+      position: 'top',
+      duration: 2000,
+      buttons: [
+        {
+          side: 'start',
+          icon: 'locate',
+        }
+      ]
     });
-
-    await alert.present();
+    toast.present();
   }
 
   currentDate() {
@@ -68,20 +79,24 @@ export class Tab1Page {
   }
 
   getGeolocation() {
-    this.geolocation.getCurrentPosition().then((resp) => {
-      this.coords = {
-        lat: resp.coords.latitude,
-        lon: resp.coords.longitude
-      };
-      this.obtenerClima();
-    }).catch((error) => {
-      // console.log('Ha ocurrido un error obteniendo la ubicacion: ', error);
-      this.presentAlert('La señal de GPS no esta disponible')
+
+    return new Promise(resolve => {
+      this.geolocation.getCurrentPosition({ timeout: 5000, enableHighAccuracy: true }).then((resp) => {
+        this.coords = {
+          lat: resp.coords.latitude,
+          lon: resp.coords.longitude
+        };
+        resolve(true)
+      }).catch(() => {
+        this.presentToast('La señal de GPS no esta disponible.');
+        resolve(false)
+      });
     });
+
   }
 
-
   obtenerClima() {
+
     this.weather.getClima(this.coords.lat, this.coords.lon).subscribe((data) => {
       // console.log(data);
       var obj = <any>data;
@@ -96,7 +111,8 @@ export class Tab1Page {
         descripcion: obj.weather[0].description,
         icon: "/assets/img/png/" + obj.weather[0].icon.slice(0, 3) + ".png"
       };
-      console.log("Informacion clima local actualizada: ",this.clima);
+      console.log("Informacion clima local actualizada: ", this.clima);
+      this.loading = false;
       this.storage.set("clima", this.clima);
     });
 

@@ -11,7 +11,9 @@
     <div class="weather-wrapper">
       <div class="location-wrapper">
         <h5 class="ciudad">
-          <ion-icon style="font-size: smaller;" name="pin"></ion-icon> {{clima.ciudad}}, {{clima.pais}}
+          <ion-spinner name="crescent" *ngIf="loading" class="tiny"></ion-spinner>
+          <ion-icon style="font-size: smaller;" name="pin" *ngIf="!loading"></ion-icon>
+          {{clima.ciudad}}, {{clima.pais}}
         </h5>
         <legend>Actualizado: {{clima.fecha}}</legend>
       </div>
