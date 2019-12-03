@@ -27,7 +27,7 @@ export class Tab1Page {
     console.log("Tab1 Listo");
 
     this.platform.ready().then(async () => {
-      // this.storage.remove("favoritos");
+
       this.storage.get('clima').then((val) => {
         if (val != null) {
           this.clima = val;
@@ -57,7 +57,6 @@ export class Tab1Page {
     const toast = await this.toastController.create({
       message: msg,
       color: 'dark',
-      // header: 'No se pudo obtener la ubicación.',
       position: 'top',
       duration: 2000,
       buttons: [
@@ -111,7 +110,7 @@ export class Tab1Page {
         descripcion: obj.weather[0].description,
         icon: "/assets/img/png/" + obj.weather[0].icon.slice(0, 3) + ".png"
       };
-      console.log("Informacion clima local actualizada: ", this.clima);
+      // console.log("Informacion clima local actualizada: ", this.clima);
       this.loading = false;
       this.storage.set("clima", this.clima);
     });

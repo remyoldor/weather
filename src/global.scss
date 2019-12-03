@@ -123,8 +123,13 @@
 
 .btn-eliminar {
   color: white;
-  font-size: 1.3rem;
-  float: right;
+font-size: 1.1rem !important;
+  --background: transparent !important;
+  --box-shadow: none !important;
+  position: absolute;
+  top: 5%;
+  right: 0;
+  
 }
 
 .btn-favoritos {
@@ -163,6 +168,7 @@ ion-spinner.tiny{
     width: auto !important;
     height: 100%;
     padding: 15px;
+    margin-right: 10%;
 }
 
 

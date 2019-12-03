@@ -21,13 +21,17 @@ export class Tab3Page {
   public favClick   : boolean = false;
 
   constructor(public platform: Platform, public httpClient: HttpClient, private weather: WeatherService, private storage: Storage, public toastController: ToastController) {
-    // weather.getFavoritos();
+
    }
 
   onSubmit() {
     this.loading = true;
     this.weather.getClimaCiudad(this.busqueda).subscribe((data) => {
       this.resultados = data;
+      this.loading = false;
+    },
+    error => {
+      console.log(error);
       this.loading = false;
     })
   }
@@ -51,7 +55,7 @@ export class Tab3Page {
   obtenerClima(latitud: number, longitud: number) {
     this.loading = true;
     this.clima = this.weather.getClima(latitud, longitud).subscribe((data) => {
-      console.log("Response api:", data);
+      // console.log("Response api:", data);
       var obj = <any>data;
       this.clima = {
         id         : obj.id,
@@ -65,12 +69,12 @@ export class Tab3Page {
         icon       : "/assets/img/png/" + obj.weather[0].icon.slice(0, 3) + ".png",
         descripcion: obj.weather[0].description
       };
-      console.log(this.clima);
       this.loading = false;
       this.selected = true;
     },
       error => {
-        console.log(error)
+        console.log(error);
+        this.loading = false;
       });
   }
 

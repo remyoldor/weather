@@ -16,7 +16,6 @@
       </ion-list-header>
       <ion-item *ngFor="let res of resultados" href="javascript:void(0)"
         (click)="obtenerClima(res.coord_lat, res.coord_lon)">
-        <!-- <ion-icon slot="start" color="medium" name="heart"></ion-icon> -->
         <ion-label>{{res.name}}, {{res.country}}</ion-label>
       </ion-item>
     </ion-list>
@@ -40,7 +39,6 @@
         <p>{{clima.descripcion|titlecase}} {{clima.temp_max}} / {{clima.temp_min}}C</p>
         <p>Humedad: {{clima.humedad}}%</p>
         <ion-button (click)="agregarFavoritos()" class="btn-favoritos">
-          <!-- <ion-icon slot="icon-only" name="heart"></ion-icon> -->
           <ion-icon *ngIf="!favClick" slot="icon-only" name="heart-empty"></ion-icon>
           <ion-icon *ngIf="favClick" slot="icon-only" color="danger" name="heart"></ion-icon>
         </ion-button>

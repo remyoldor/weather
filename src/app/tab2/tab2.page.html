@@ -18,12 +18,10 @@
         <ion-card-title color="light">{{f.ciudad}}, {{f.pais}} <strong>{{f.temp}}</strong></ion-card-title>
         <ion-card-subtitle color="light"><p>{{f.descripcion|titlecase}} {{f.temp_max}} / {{f.temp_min}}C</p></ion-card-subtitle>
         <img src="{{f.icon}}" alt="" class="weather-icon">
-      </ion-card-header>
-      <!-- <ion-card-content>
-        <ion-button (click)="eliminar(f.id)">
-          Eliminar
+        <ion-button class="btn-eliminar" (click)="eliminar(f.id)">
+          <ion-icon name="close"></ion-icon>
         </ion-button>
-      </ion-card-content> -->
+      </ion-card-header>
     </ion-card>
     
 </ion-content>

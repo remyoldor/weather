@@ -15,6 +15,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { WeatherService } from "./api/weather.service";
 import { IonicStorageModule } from '@ionic/storage';
 
+import { Network } from '@ionic-native/network/ngx';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -24,7 +26,8 @@ import { IonicStorageModule } from '@ionic/storage';
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     Geolocation,
-    WeatherService
+    WeatherService,
+    Network
   ],
   bootstrap: [AppComponent]
 })

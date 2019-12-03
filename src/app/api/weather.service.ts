@@ -4,6 +4,7 @@ import { Platform } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { Storage } from '@ionic/storage';
+import { Network } from '@ionic-native/network/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -15,12 +16,17 @@ export class WeatherService {
   public favoritos = [];
   public fobs: BehaviorSubject<any>;
 
-  constructor(public platform: Platform, public httpClient: HttpClient, private storage: Storage, public geolocation: Geolocation) {
-    console.log("Servicio listo");
+  constructor(public platform: Platform, public httpClient: HttpClient, private storage: Storage, public geolocation: Geolocation, private network: Network) {
+    console.log("WeatherService listo");
     this.platform.ready().then(() => {
       this.getFavoritos();
     });
 
+  }
+
+  isConnected(): boolean {
+    let conntype = this.network.type;
+    return conntype && conntype !== 'unknown' && conntype !== 'none';
   }
 
   getClimaCiudad(busqueda: string) {
@@ -46,24 +52,22 @@ export class WeatherService {
   pushFavoritos(nuevo: any) {
     this.favoritos.push(nuevo);
     this.storage.set("favoritos", this.favoritos);
-    console.log(this.fobs);
-    
-    console.log(this.favoritos);
   }
-
+  
   removeFavoritos(id: number) {
-    console.log("Se borrara con el id: ", id);
-    // this.favoritos.find(f => f.id === id);
-    // this.storage.set("favoritos", this.favoritos);
-
-    this.favoritos = this.favoritos.filter(function (el) {
-      if (el.id === id) {
-        return false;
+    
+    var index = -1;    
+    
+    this.favoritos.find((item, i) => {
+      if (item.id === id) {
+        index = i;
       }
-      return true;
+      return true
     });
-
-    console.log("Resultado", this.favoritos);
+    
+    this.favoritos.splice(index, 1);
+    this.storage.set("favoritos", this.favoritos);
+    console.log(this.favoritos);
 
   }
 
@@ -74,13 +78,12 @@ export class WeatherService {
 
       this.storage.get('favoritos').then(async (val) => {
 
-        console.log("Get favoritos before:", val);
         if (val != null) {
           this.favoritos = val;
         } else {
           this.favoritos = [];
         }
-        console.log("Get favoritos after:", val);
+
         res = <boolean>await this.actualizarFavoritos();
         resolve(res)
       });
@@ -91,7 +94,6 @@ export class WeatherService {
 
     return new Promise(resolve => {
       var favoritosAux = [];
-      console.log("antes de actualizar", this.favoritos);
 
       this.favoritos.forEach(el => {
 
@@ -120,7 +122,6 @@ export class WeatherService {
         this.favoritos = favoritosAux;
         this.storage.set("favoritos", this.favoritos);
         this.fobs = new BehaviorSubject(this.favoritos);
-        console.log("Despues de actualizar", this.favoritos);
         resolve(true)
       }, 1500);
       

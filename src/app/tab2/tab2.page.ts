@@ -33,21 +33,25 @@ export class Tab2Page {
   }
   
   async actualizar() {
-
-    // var b = <boolean>await this.weather.getFavoritos();
-
-    this.weather.getFavoritos().then( (b) => {
-      console.log("Devolvio:",b);
-      
-      this.weather.fobs.subscribe(fav => {
-        console.log("Get fobs",fav);
-        this.favoritos = fav;
-        this.loading = false;
-      });
-      // this.loading = true;
-      console.log("Tab2 actualizar",this.favoritos);
-    })
     
+    // Para que funcione correctamente en la pc, hay que descomentar estas dos lineas
+    var conexion = this.weather.isConnected();
+    if ((conexion == null) || conexion) {
+    //  y comentar esta, el metodo isConnected utiliza Cordova y no está disponible al menos que usara cordova.js o utilizara un emulador. El apk esta compilado con la linea de abajo descomentada.
+    // if (this.weather.isConnected()) {
+
+      this.weather.getFavoritos().then( (b) => {
+        
+        this.weather.fobs.subscribe(fav => {
+          this.favoritos = fav;
+          this.loading = false;
+        });
+        console.log("Tab2 actualizar",this.favoritos);
+      })
+    } else {
+      this.loading = false;
+    }
+      
   }
 
   eliminar(id: number) {
